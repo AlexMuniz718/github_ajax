@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Github Profile Finder</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:300,400,600,700" rel="stylesheet">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="container">
+  <h1 class="text-center"><i class="fab fa-github"></i> Github Profile Finder <i class="fas fa-code-branch"></i></h1> 
+  <form id="userForm">
+    <div class="form-group">
+      <label for="Github username"><i class="fab fa-github-square"></i> Github Username:</label>
+      <input type="text" class="form-control" id="username" placeholder="Search For A User Name">
+    </div>
+  </form> 
+  <div id="profile"></div>
+</div>
+  
+  <script>
+    function getProfile(e){
+      e.preventDefault();
+      console.log('Fetching...');
+      var username = document.getElementById('username').value;
+      if(!username || username == '') {
+        username = 'AlexMuniz718';
+      }
+
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function(){
+        if(xhttp.readyState == 4 && xhttp.status == 200){
+          var user = JSON.parse(xhttp.responseText);
+          document.getElementById('profile').innerHTML = 
+        `<div class="card">
+            <div class="card-body card-header">
+              <h3>${username}</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                  <div class="col-md-3">
+                    <img src="${user.avatar_url}">
+                  </div>
+                  <div class="col-md-9">
+                    <ul class="list-group list-group-flush">
+                      <li class="list-group-item">
+                        <button type="button" class="btn btn-primary">
+                          Public Repos <span class="badge badge-light">${user.public_repos}</span>
+                          <span class="sr-only">unread messages</span>
+                        </button>
+                      </li>
+                      <li class="list-group-item">
+                        <button type="button" class="btn btn-danger">
+                          Public Gists <span class="badge badge-light">${user.public_gists}</span>
+                          <span class="sr-only">unread messages</span>
+                        </button>
+                      </li>
+
+                      <li class="list-group-item">
+                      <a class="badge badge-secondary" target="_blank" href="${user.html_url}">Visit Github</a></li>
+                    </ul>
+                  </div>
+                  </div>
+            </div>
+          </div>`;
+        }
+      }
+      xhttp.open('GET', 'https://api.github.com/users/'+username, true);
+      xhttp.send();
+    }
+
+    document.getElementById('userForm').addEventListener('submit', getProfile, false);
+
+    
+  </script>
+</body>
+</html>
